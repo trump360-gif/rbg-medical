@@ -2,26 +2,99 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────
+   Design Tokens — RBG Medical
+───────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand */
+  --color-primary:       #185FA5;
+  --color-primary-light: #E6F1FB;
+  --color-primary-dark:  #0C447C;
+
+  /* Semantic */
+  --color-success:       #3B6D11;
+  --color-success-light: #EAF3DE;
+  --color-warning:       #633806;
+  --color-warning-light: #FAEEDA;
+  --color-danger:        #A32D2D;
+  --color-danger-light:  #FCEBEB;
+
+  /* Surface */
+  --color-bg-white:   #FFFFFF;
+  --color-bg-surface: #FAFAFA;
+
+  /* Border */
+  --color-border: #E8E8E8;
+
+  /* Text */
+  --color-text-primary:   #0D0D0D;
+  --color-text-secondary: #7A7A7A;
+  --color-text-muted:     #B0B0B0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ─────────────────────────────────────────────
+   Base Reset
+───────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-surface);
+    font-family: 'Inter', 'Noto Sans KR', ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--color-primary-dark);
+  }
+
+  input, textarea, select, button {
+    font-family: inherit;
+    font-size: inherit;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
+/* ─────────────────────────────────────────────
+   Utility Layer Additions
+───────────────────────────────────────────── */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Scrollbar thin */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 2px;
   }
 }
