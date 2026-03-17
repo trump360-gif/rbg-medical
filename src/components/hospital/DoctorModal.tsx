@@ -279,19 +279,15 @@ export default function DoctorModal({
             <Send size={15} aria-hidden="true" />
             이 교수로 접수하기
           </button>
-          <a
-            href={`https://wa.me/${doctor.languages
-              .find((l) => l.code === "ru")
-              ?.code ?? ""}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => alert("WhatsApp 연결은 실제 배포 시 활성화됩니다.")}
             data-testid="doctor-modal-whatsapp-btn"
             className="flex items-center justify-center gap-2 bg-success-light hover:bg-success/10 text-success text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors"
-            onClick={(e) => e.preventDefault()}
           >
             <MessageCircle size={15} aria-hidden="true" />
             WhatsApp
-          </a>
+          </button>
         </div>
       </div>
     </div>

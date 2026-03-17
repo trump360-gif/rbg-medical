@@ -847,6 +847,7 @@ function MobileDoctorDetail({
         </button>
         <button
           type="button"
+          onClick={() => alert("WhatsApp 연결은 실제 배포 시 활성화됩니다.")}
           data-testid="mobile-doctor-whatsapp-btn"
           className="w-full flex items-center justify-center gap-2 bg-success-light text-success text-sm font-semibold py-3 rounded-xl hover:opacity-90 transition-opacity"
         >
@@ -1134,7 +1135,7 @@ function HospitalsPageContent() {
   return (
     <>
       {/* ===== MOBILE ===== */}
-      <div className="md:hidden flex flex-col h-screen bg-bg-surface" data-testid="hospitals-mobile">
+      <div className="md:hidden flex flex-col h-[calc(100vh-56px)] bg-bg-surface" data-testid="hospitals-mobile">
         {/* Doctor screen */}
         {mobileScreen === "doctor" && mobileDoctorInfo && (
           <MobileDoctorDetail
@@ -1411,7 +1412,7 @@ function HospitalsPageContent() {
 
       {/* ===== DESKTOP ===== */}
       <div
-        className="hidden md:flex h-[calc(100vh-0px)] overflow-hidden"
+        className="hidden md:flex h-screen overflow-hidden"
         data-testid="hospitals-desktop"
       >
         {/* Left: Filter panel */}
