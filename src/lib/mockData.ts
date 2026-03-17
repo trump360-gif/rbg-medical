@@ -10,9 +10,9 @@ export const HOSPITALS: Hospital[] = [
     district: '강남구',
     address: '서울특별시 강남구 언주로 211',
     photos: [
-      { url: 'https://placehold.co/800x500/185FA5/FFFFFF?text=강남세브란스병원', label: '병원 외관' },
-      { url: 'https://placehold.co/800x500/0C447C/FFFFFF?text=로비', label: '로비' },
-      { url: 'https://placehold.co/800x500/E6F1FB/185FA5?text=국제진료센터', label: '국제진료센터' },
+      { url: 'https://placehold.co/800x500/185FA5/FFFFFF?text=Gangnam+Severance', label: '병원 외관' },
+      { url: 'https://placehold.co/800x500/0C447C/FFFFFF?text=Lobby', label: '로비' },
+      { url: 'https://placehold.co/800x500/E6F1FB/185FA5?text=Intl+Center', label: '국제진료센터' },
     ],
     departments: [
       {
@@ -98,9 +98,9 @@ export const HOSPITALS: Hospital[] = [
     district: '강남구',
     address: '서울특별시 강남구 일원로 81',
     photos: [
-      { url: 'https://placehold.co/800x500/185FA5/FFFFFF?text=삼성서울병원', label: '병원 외관' },
-      { url: 'https://placehold.co/800x500/0C447C/FFFFFF?text=센터동', label: '센터동' },
-      { url: 'https://placehold.co/800x500/E6F1FB/185FA5?text=외래동', label: '외래동' },
+      { url: 'https://placehold.co/800x500/185FA5/FFFFFF?text=Samsung+Medical', label: '병원 외관' },
+      { url: 'https://placehold.co/800x500/0C447C/FFFFFF?text=Center+Bldg', label: '센터동' },
+      { url: 'https://placehold.co/800x500/E6F1FB/185FA5?text=Outpatient', label: '외래동' },
     ],
     departments: [
       {
@@ -186,9 +186,9 @@ export const HOSPITALS: Hospital[] = [
     district: '송파구',
     address: '서울특별시 송파구 올림픽로 43길 88',
     photos: [
-      { url: 'https://placehold.co/800x500/185FA5/FFFFFF?text=서울아산병원', label: '병원 전경' },
-      { url: 'https://placehold.co/800x500/0C447C/FFFFFF?text=암병원', label: '암병원' },
-      { url: 'https://placehold.co/800x500/E6F1FB/185FA5?text=국제진료센터', label: '국제진료센터' },
+      { url: 'https://placehold.co/800x500/185FA5/FFFFFF?text=Asan+Medical', label: '병원 전경' },
+      { url: 'https://placehold.co/800x500/0C447C/FFFFFF?text=Cancer+Center', label: '암병원' },
+      { url: 'https://placehold.co/800x500/E6F1FB/185FA5?text=Intl+Center', label: '국제진료센터' },
     ],
     departments: [
       {
