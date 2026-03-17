@@ -280,7 +280,7 @@ export default function PatientDetailPage() {
 
   return (
     <div
-      className="p-4 md:p-6 lg:p-8 pb-24 md:pb-8"
+      className="p-4 md:p-6 lg:p-8"
       data-testid="patient-detail-page"
     >
       {/* ── Breadcrumb ── */}

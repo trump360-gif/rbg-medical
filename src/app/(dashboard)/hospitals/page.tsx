@@ -17,33 +17,29 @@ import {
   GraduationCap,
   Users,
   X,
+  MapPin,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/cn";
 import { HOSPITALS, PATIENTS } from "@/lib/mockData";
 import { useAppStore } from "@/lib/store";
 import { Hospital, Doctor, Department } from "@/lib/types";
+import { getDoctorPhotoUrl } from "@/lib/doctorPhotos";
 import TopNav from "@/components/layout/TopNav";
 import DoctorModal from "@/components/hospital/DoctorModal";
+import { ImageViewer } from "@/components/ImageViewer";
 
-// ─── Avatar helpers ─────────────────────────────────────────────────────────
-
-const AVATAR_COLORS = [
-  "bg-primary text-white",
-  "bg-primary-dark text-white",
-  "bg-success text-white",
-  "bg-warning text-white",
-];
-
-function getAvatarColor(id: string): string {
-  const idx =
-    id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) %
-    AVATAR_COLORS.length;
-  return AVATAR_COLORS[idx];
-}
-
-function getInitials(name: string) {
-  return name.slice(0, 2);
-}
+const HospitalMap = dynamic(
+  () => import("@/components/hospital/HospitalMap"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full flex items-center justify-center bg-bg-surface">
+        <p className="text-sm text-text-muted">지도 로딩 중...</p>
+      </div>
+    ),
+  }
+);
 
 // ─── StepBar ────────────────────────────────────────────────────────────────
 
@@ -121,14 +117,14 @@ function Toggle({
         type="button"
         onClick={() => onChange(!checked)}
         className={cn(
-          "w-10 h-6 rounded-full relative transition-colors shrink-0",
+          "w-10 h-6 p-1 rounded-full relative flex items-center transition-colors shrink-0",
           checked ? "bg-primary" : "bg-[#D1D5DB]"
         )}
       >
         <span
           className={cn(
-            "absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-transform",
-            checked ? "translate-x-5" : "translate-x-1"
+            "w-4 h-4 rounded-full bg-white shadow-sm transition-transform",
+            checked ? "translate-x-4" : "translate-x-0"
           )}
         />
       </button>
@@ -490,14 +486,13 @@ function DepartmentAccordion({
               data-testid={`doctor-row-${doctor.id}`}
             >
               {/* Avatar */}
-              <div
-                className={cn(
-                  "w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0",
-                  getAvatarColor(doctor.id)
-                )}
-                aria-hidden="true"
-              >
-                {getInitials(doctor.name)}
+              <div className="w-9 h-9 rounded-full shrink-0 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={getDoctorPhotoUrl(doctor.id)}
+                  alt={doctor.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-text-primary">
@@ -537,6 +532,7 @@ function HospitalDetail({
   onDoctorClick: (doctor: Doctor, dept: Department, hospital: Hospital) => void;
 }) {
   const photos = hospital.photos;
+  const [viewerPhotoIndex, setViewerPhotoIndex] = useState<number | null>(null);
 
   return (
     <div
@@ -544,15 +540,15 @@ function HospitalDetail({
       data-testid="hospital-detail-panel"
     >
       {/* Photo grid */}
-      <div className="flex h-[180px] bg-bg-surface">
+      <div className="flex h-[180px] bg-bg-surface cursor-pointer" onClick={() => photos.length > 0 && setViewerPhotoIndex(0)}>
         {/* Main photo */}
-        <div className="flex-[2] overflow-hidden">
+        <div className="flex-[2] overflow-hidden group">
           {photos[0] ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={photos[0].url}
               alt={photos[0].label}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
             <div className="w-full h-full bg-bg-surface" />
@@ -561,13 +557,18 @@ function HospitalDetail({
         {/* Side column */}
         <div className="w-[160px] flex flex-col gap-px shrink-0">
           {[1, 2].map((i) => (
-            <div key={i} className="flex-1 overflow-hidden">
+            <div key={i} className="flex-1 overflow-hidden group" onClick={(e) => {
+              if (photos[i]) {
+                e.stopPropagation();
+                setViewerPhotoIndex(i);
+              }
+            }}>
               {photos[i] ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={photos[i].url}
                   alt={photos[i].label}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (
                 <div className="w-full h-full bg-border" />
@@ -576,6 +577,14 @@ function HospitalDetail({
           ))}
         </div>
       </div>
+      
+      {viewerPhotoIndex !== null && (
+        <ImageViewer 
+          photos={photos} 
+          initialIndex={viewerPhotoIndex} 
+          onClose={() => setViewerPhotoIndex(null)} 
+        />
+      )}
 
       {/* Hospital header */}
       <div className="px-6 pt-5 pb-4">
@@ -639,6 +648,23 @@ function HospitalDetail({
         <p className="text-sm text-text-secondary mt-3 line-clamp-2">
           {hospital.description}
         </p>
+
+        {/* Location map */}
+        <div className="mt-4">
+          <div className="flex items-center gap-1.5 mb-2">
+            <MapPin size={13} className="text-text-secondary" />
+            <span className="text-xs font-medium text-text-secondary">
+              {hospital.region} {hospital.district}
+            </span>
+          </div>
+          <div className="h-[180px] rounded-lg overflow-hidden border border-border">
+            <HospitalMap
+              hospitals={[hospital]}
+              selectedHospitalId={hospital.id}
+              mini
+            />
+          </div>
+        </div>
       </div>
 
       <hr className="border-border mx-6" />
@@ -692,14 +718,13 @@ function MobileDoctorDetail({
       <div className="flex-1 overflow-y-auto bg-white">
         {/* Profile */}
         <div className="flex items-start gap-4 px-4 pt-5 pb-4">
-          <div
-            className={cn(
-              "w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold shrink-0",
-              getAvatarColor(doctor.id)
-            )}
-            aria-hidden="true"
-          >
-            {getInitials(doctor.name)}
+          <div className="w-14 h-14 rounded-full shrink-0 overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={getDoctorPhotoUrl(doctor.id)}
+              alt={doctor.name}
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="flex-1 min-w-0">
             <h2 className="text-lg font-bold text-text-primary">
@@ -998,13 +1023,13 @@ function MobileFilterDrawer({
 
 // ─── Default filter state ─────────────────────────────────────────────────────
 
-function defaultFilters(): FilterState {
+function defaultFilters(initialDepartment?: string): FilterState {
   return {
-    departments: [],
-    hospitalTypes: ["상급종합병원"],
+    departments: initialDepartment ? [initialDepartment] : [],
+    hospitalTypes: ["상급종합병원", "종합병원", "전문병원"],
     regions: [],
     languages: [],
-    registeredOnly: true,
+    registeredOnly: false,
     acceptingOnly: false,
   };
 }
@@ -1054,7 +1079,7 @@ function HospitalsPageContent() {
     closeDoctorModal,
   } = useAppStore();
 
-  const [filters, setFilters] = useState<FilterState>(defaultFilters);
+  const [filters, setFilters] = useState<FilterState>(() => defaultFilters(matchedDeptName));
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileScreen, setMobileScreen] = useState<"list" | "detail" | "doctor">("list");
   const [mobileDoctorInfo, setMobileDoctorInfo] = useState<{
@@ -1099,8 +1124,10 @@ function HospitalsPageContent() {
   }, [selectedDoctorId, selectedDoctorHospitalId]);
 
   function handleHospitalClick(hospital: Hospital) {
-    setSelectedHospitalId(hospital.id);
-    setMobileScreen("detail");
+    // Toggle: same hospital = collapse, different = expand
+    setSelectedHospitalId(
+      selectedHospitalId === hospital.id ? null : hospital.id
+    );
   }
 
   function handleDoctorClick(
@@ -1126,10 +1153,6 @@ function HospitalsPageContent() {
     setSearchQuery("");
   }
 
-  const mobileHospital = useMemo(() => {
-    if (!selectedHospitalId) return filteredHospitals[0] ?? null;
-    return filteredHospitals.find((h) => h.id === selectedHospitalId) ?? filteredHospitals[0] ?? null;
-  }, [selectedHospitalId, filteredHospitals]);
 
   // ── MOBILE RENDER ──────────────────────────────────────────────────────────
   return (
@@ -1142,132 +1165,12 @@ function HospitalsPageContent() {
             doctor={mobileDoctorInfo.doctor}
             departmentName={mobileDoctorInfo.dept.name}
             hospitalName={mobileDoctorInfo.hospital.name}
-            onBack={() => setMobileScreen("detail")}
+            onBack={() => setMobileScreen("list")}
             onApply={() => handleApply()}
           />
         )}
 
-        {/* Detail screen */}
-        {mobileScreen === "detail" && mobileHospital && (
-          <div className="flex flex-col flex-1 min-h-0">
-            <TopNav
-              title={mobileHospital.name}
-              showBack
-              onBack={() => setMobileScreen("list")}
-            />
-            <StepBar current={2} />
-            <div className="flex-1 overflow-y-auto bg-white">
-              {/* Photo */}
-              <div className="relative w-full h-[200px] bg-bg-surface overflow-hidden">
-                {mobileHospital.photos[0] && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={mobileHospital.photos[0].url}
-                    alt={mobileHospital.photos[0].label}
-                    className="w-full h-full object-cover"
-                  />
-                )}
-                {/* dot indicators */}
-                <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
-                  {mobileHospital.photos.map((_, i) => (
-                    <span
-                      key={i}
-                      className={cn(
-                        "w-1.5 h-1.5 rounded-full",
-                        i === 0 ? "bg-white" : "bg-white/50"
-                      )}
-                    />
-                  ))}
-                </div>
-                {/* photo count badge */}
-                <span className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-0.5 rounded-full">
-                  1/{mobileHospital.photos.length}
-                </span>
-              </div>
-
-              {/* Info */}
-              <div className="px-4 pt-4 pb-2">
-                <h2
-                  className="text-lg font-bold text-text-primary"
-                  data-testid="mobile-detail-name"
-                >
-                  {mobileHospital.name}
-                </h2>
-                <p className="text-sm text-text-secondary mt-0.5">
-                  {mobileHospital.typeLabel} · {mobileHospital.address}
-                </p>
-
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {mobileHospital.certifications.slice(0, 2).map((cert) => (
-                    <span
-                      key={cert}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary-light px-2.5 py-1 rounded-full"
-                    >
-                      {cert.includes("JCI") ? (
-                        <ShieldCheck size={11} aria-hidden="true" />
-                      ) : (
-                        <Globe size={11} aria-hidden="true" />
-                      )}
-                      {cert}
-                    </span>
-                  ))}
-                </div>
-
-                <p className="text-sm text-text-secondary mt-3 line-clamp-2">
-                  {mobileHospital.description}
-                </p>
-
-                <div className="flex gap-2 mt-3">
-                  {mobileHospital.whatsappNumber && (
-                    <a
-                      href={`https://wa.me/${mobileHospital.whatsappNumber.replace(/[^0-9]/g, "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-testid="mobile-detail-whatsapp"
-                      className="flex items-center gap-1.5 bg-success-light text-success text-xs font-semibold px-3 py-2 rounded-lg"
-                    >
-                      <MessageCircle size={13} aria-hidden="true" />
-                      WhatsApp
-                    </a>
-                  )}
-                  {mobileHospital.email && (
-                    <a
-                      href={`mailto:${mobileHospital.email}`}
-                      data-testid="mobile-detail-email"
-                      className="flex items-center gap-1.5 border border-border text-text-secondary text-xs font-medium px-3 py-2 rounded-lg"
-                    >
-                      <Mail size={13} aria-hidden="true" />
-                      Email
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              <hr className="border-border mx-4 mt-3" />
-
-              <div className="px-4 pt-4 pb-6">
-                <h3 className="text-sm font-semibold text-text-primary mb-3">
-                  진료과
-                </h3>
-                <div className="flex flex-col gap-2">
-                  {mobileHospital.departments.map((dept) => (
-                    <DepartmentAccordion
-                      key={dept.id}
-                      dept={dept}
-                      isMatched={dept.name === matchedDeptName}
-                      defaultOpen={dept.name === matchedDeptName}
-                      onDoctorClick={(doctor, d) =>
-                        handleDoctorClick(doctor, d, mobileHospital)
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* List screen */}
+        {/* List screen (with accordion detail) */}
         {mobileScreen === "list" && (
           <div className="flex flex-col flex-1 min-h-0">
             <TopNav
@@ -1366,21 +1269,194 @@ function HospitalsPageContent() {
               </p>
             </div>
 
-            {/* Hospital list */}
+            {/* Hospital accordion list */}
             <div
               className="flex-1 overflow-y-auto flex flex-col gap-3 p-4"
               data-testid="mobile-hospital-list"
             >
-              {filteredHospitals.map((hospital) => (
-                <HospitalCard
-                  key={hospital.id}
-                  hospital={hospital}
-                  isSelected={selectedHospitalId === hospital.id}
-                  onClick={() => handleHospitalClick(hospital)}
-                  matchedDeptName={matchedDeptName}
-                  variant="mobile"
-                />
-              ))}
+              {filteredHospitals.map((hospital) => {
+                const isExpanded = selectedHospitalId === hospital.id;
+                return (
+                  <div
+                    key={hospital.id}
+                    className={cn(
+                      "rounded-xl border overflow-hidden transition-colors shrink-0",
+                      isExpanded
+                        ? "border-primary bg-white"
+                        : "border-border bg-white"
+                    )}
+                  >
+                    {/* Card header (always visible) */}
+                    <button
+                      type="button"
+                      onClick={() => handleHospitalClick(hospital)}
+                      className="w-full p-4 text-left"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-12 h-12 rounded-md bg-bg-surface shrink-0 overflow-hidden">
+                          {hospital.photos[0] ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={hospital.photos[0].url}
+                              alt={hospital.photos[0].label}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : null}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <p className="font-semibold text-sm text-text-primary truncate">
+                              {hospital.name}
+                            </p>
+                            <ChevronDown
+                              size={16}
+                              className={cn(
+                                "shrink-0 text-text-secondary transition-transform",
+                                isExpanded && "rotate-180"
+                              )}
+                            />
+                          </div>
+                          <p className="text-xs text-text-secondary mt-0.5">
+                            {hospital.typeLabel} · {hospital.region}
+                          </p>
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {hospital.departments.slice(0, 3).map((d) => (
+                              <span
+                                key={d.id}
+                                className={cn(
+                                  "text-[10px] font-medium px-1.5 py-0.5 rounded-full",
+                                  d.name === matchedDeptName
+                                    ? "bg-primary text-white"
+                                    : "bg-primary-light text-primary-dark"
+                                )}
+                              >
+                                {d.name}
+                              </span>
+                            ))}
+                            {hospital.languages.slice(0, 2).map((lang) => (
+                              <span
+                                key={lang.code}
+                                className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-primary-light text-primary-dark"
+                              >
+                                {lang.label}
+                              </span>
+                            ))}
+                            {hospital.isAcceptingReferral && (
+                              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-success-light text-success">
+                                접수가능
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+
+                    {/* Expanded detail (accordion body) */}
+                    {isExpanded && (
+                      <div className="border-t border-border">
+                        {/* Photo scroll */}
+                        {hospital.photos.length > 0 && (
+                          <div className="flex gap-1.5 px-4 pt-3 overflow-x-auto scrollbar-hide">
+                            {hospital.photos.slice(0, 4).map((photo, i) => (
+                              <div key={i} className="w-[120px] h-[80px] rounded-lg overflow-hidden shrink-0">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={photo.url}
+                                  alt={photo.label}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Info */}
+                        <div className="px-4 pt-3 pb-2">
+                          <div className="flex flex-wrap gap-2">
+                            {hospital.certifications.slice(0, 2).map((cert) => (
+                              <span
+                                key={cert}
+                                className="inline-flex items-center gap-1 text-[11px] font-medium text-primary bg-primary-light px-2 py-0.5 rounded-full"
+                              >
+                                {cert.includes("JCI") ? (
+                                  <ShieldCheck size={10} aria-hidden="true" />
+                                ) : (
+                                  <Globe size={10} aria-hidden="true" />
+                                )}
+                                {cert}
+                              </span>
+                            ))}
+                          </div>
+                          <p className="text-sm text-text-secondary mt-2 line-clamp-2">
+                            {hospital.description}
+                          </p>
+                        </div>
+
+                        {/* Mini map */}
+                        <div className="px-4 pb-3">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <MapPin size={12} className="text-text-secondary" />
+                            <span className="text-[11px] text-text-secondary">
+                              {hospital.region} {hospital.district}
+                            </span>
+                          </div>
+                          <div className="h-[140px] rounded-lg overflow-hidden border border-border">
+                            <HospitalMap
+                              hospitals={[hospital]}
+                              selectedHospitalId={hospital.id}
+                              mini
+                            />
+                          </div>
+                        </div>
+
+                        {/* Contact */}
+                        <div className="flex gap-2 px-4 pb-3">
+                          {hospital.whatsappNumber && (
+                            <a
+                              href={`https://wa.me/${hospital.whatsappNumber.replace(/[^0-9]/g, "")}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 bg-success-light text-success text-xs font-semibold px-3 py-2 rounded-lg"
+                            >
+                              <MessageCircle size={13} aria-hidden="true" />
+                              WhatsApp
+                            </a>
+                          )}
+                          {hospital.email && (
+                            <a
+                              href={`mailto:${hospital.email}`}
+                              className="flex items-center gap-1.5 border border-border text-text-secondary text-xs font-medium px-3 py-2 rounded-lg"
+                            >
+                              <Mail size={13} aria-hidden="true" />
+                              Email
+                            </a>
+                          )}
+                        </div>
+
+                        {/* Departments */}
+                        <div className="px-4 pb-4">
+                          <h3 className="text-xs font-semibold text-text-primary mb-2">
+                            진료과
+                          </h3>
+                          <div className="flex flex-col gap-2">
+                            {hospital.departments.map((dept) => (
+                              <DepartmentAccordion
+                                key={dept.id}
+                                dept={dept}
+                                isMatched={dept.name === matchedDeptName}
+                                defaultOpen={dept.name === matchedDeptName}
+                                onDoctorClick={(doctor, d) =>
+                                  handleDoctorClick(doctor, d, hospital)
+                                }
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
               {filteredHospitals.length === 0 && (
                 <div className="text-center py-12">
                   <p className="text-sm text-text-muted">

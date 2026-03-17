@@ -131,7 +131,7 @@ export default function NewPatientPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 pb-24 md:pb-8" data-testid="new-patient-page">
+    <div className="p-4 md:p-6 lg:p-8" data-testid="new-patient-page">
 
       {/* ── Breadcrumb ── */}
       <nav

@@ -6,6 +6,8 @@ export interface Hospital {
   region: string
   district: string
   address: string
+  lat: number
+  lng: number
   photos: Photo[]
   departments: Department[]
   languages: LanguageSupport[]

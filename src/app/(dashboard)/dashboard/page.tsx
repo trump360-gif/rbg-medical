@@ -122,7 +122,7 @@ function NotificationIcon({ variant }: { variant: NotificationVariant }) {
 
 export default function DashboardPage() {
   return (
-    <div className="p-4 md:p-6 lg:p-8 pb-24 md:pb-8">
+    <div className="p-4 md:p-6 lg:p-8">
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <h1
