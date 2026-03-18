@@ -11,13 +11,14 @@ interface TabItem {
   label: string;
   href: string;
   icon: React.ElementType;
+  visibleFor: MemberType[];
 }
 
 const tabItems: TabItem[] = [
-  { label: "홈", href: "/dashboard", icon: LayoutDashboard },
-  { label: "환자", href: "/patients", icon: Users },
-  { label: "병원", href: "/hospitals", icon: Building2 },
-  { label: "설정", href: "/settings", icon: Settings },
+  { label: "홈", href: "/dashboard", icon: LayoutDashboard, visibleFor: ["patient", "doctor", "agency"] },
+  { label: "환자", href: "/patients", icon: Users, visibleFor: ["agency"] },
+  { label: "병원", href: "/hospitals", icon: Building2, visibleFor: ["patient", "doctor", "agency"] },
+  { label: "설정", href: "/settings", icon: Settings, visibleFor: ["patient", "doctor", "agency"] },
 ];
 
 const memberTypeBadge: Record<MemberType, { label: string; icon: React.ElementType; color: string; bg: string }> = {
@@ -54,7 +55,7 @@ export default function MobileNav() {
         </span>
       </button>
 
-      {tabItems.map((item) => {
+      {tabItems.filter((item) => item.visibleFor.includes(currentUser.memberType)).map((item) => {
         const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
         const Icon = item.icon;
 

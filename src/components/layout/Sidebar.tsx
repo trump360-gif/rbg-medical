@@ -12,13 +12,14 @@ interface NavItem {
   label: string;
   href: string;
   icon: React.ElementType;
+  visibleFor: MemberType[];
 }
 
 const navItems: NavItem[] = [
-  { label: "대시보드", href: "/dashboard", icon: LayoutDashboard },
-  { label: "환자 관리", href: "/patients", icon: Users },
-  { label: "병원 검색", href: "/hospitals", icon: Building2 },
-  { label: "설정", href: "/settings", icon: Settings },
+  { label: "대시보드", href: "/dashboard", icon: LayoutDashboard, visibleFor: ["patient", "doctor", "agency"] },
+  { label: "환자 관리", href: "/patients", icon: Users, visibleFor: ["agency"] },
+  { label: "병원 검색", href: "/hospitals", icon: Building2, visibleFor: ["patient", "doctor", "agency"] },
+  { label: "설정", href: "/settings", icon: Settings, visibleFor: ["patient", "doctor", "agency"] },
 ];
 
 const memberTypeConfig: Record<MemberType, { label: string; icon: React.ElementType; color: string; bgColor: string }> = {
@@ -81,7 +82,7 @@ export default function Sidebar() {
 
       {/* Nav items */}
       <nav className="mt-4 flex flex-col gap-1 flex-1" aria-label="주 메뉴" data-testid="sidebar-nav">
-        {navItems.map((item) => {
+        {navItems.filter((item) => item.visibleFor.includes(currentUser.memberType)).map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           const Icon = item.icon;
 
