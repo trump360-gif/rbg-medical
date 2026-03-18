@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, Users, Building2, Settings, User, Stethoscope, Briefcase, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Building2, Settings, User, Stethoscope, Briefcase, LogOut, FileText, Send } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useUserStore } from "@/lib/userStore";
 import { MemberType } from "@/lib/types";
@@ -17,6 +17,8 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "대시보드", href: "/dashboard", icon: LayoutDashboard, visibleFor: ["patient", "doctor", "agency"] },
+  { label: "내 진료", href: "/my-cases", icon: FileText, visibleFor: ["patient"] },
+  { label: "의뢰 환자", href: "/referrals", icon: Send, visibleFor: ["doctor"] },
   { label: "환자 관리", href: "/patients", icon: Users, visibleFor: ["agency"] },
   { label: "병원 검색", href: "/hospitals", icon: Building2, visibleFor: ["patient", "agency"] },
   { label: "설정", href: "/settings", icon: Settings, visibleFor: ["patient", "doctor", "agency"] },

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Building2, Settings, User, Stethoscope, Briefcase } from "lucide-react";
+import { LayoutDashboard, Users, Building2, Settings, User, Stethoscope, Briefcase, FileText, Send } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useUserStore } from "@/lib/userStore";
 import { MemberType } from "@/lib/types";
@@ -16,6 +16,8 @@ interface TabItem {
 
 const tabItems: TabItem[] = [
   { label: "홈", href: "/dashboard", icon: LayoutDashboard, visibleFor: ["patient", "doctor", "agency"] },
+  { label: "진료", href: "/my-cases", icon: FileText, visibleFor: ["patient"] },
+  { label: "의뢰", href: "/referrals", icon: Send, visibleFor: ["doctor"] },
   { label: "환자", href: "/patients", icon: Users, visibleFor: ["agency"] },
   { label: "병원", href: "/hospitals", icon: Building2, visibleFor: ["patient", "agency"] },
   { label: "설정", href: "/settings", icon: Settings, visibleFor: ["patient", "doctor", "agency"] },
