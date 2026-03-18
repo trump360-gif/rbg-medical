@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Building2, Settings, User, Stethoscope, Briefcase } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { LayoutDashboard, Users, Building2, Settings, User, Stethoscope, Briefcase, LogOut } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useUserStore } from "@/lib/userStore";
 import { MemberType } from "@/lib/types";
@@ -28,6 +29,7 @@ const memberTypeConfig: Record<MemberType, { label: string; icon: React.ElementT
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { currentUser, switchUserType } = useUserStore();
   const typeConfig = memberTypeConfig[currentUser.memberType];
   const TypeIcon = typeConfig.icon;
@@ -78,7 +80,7 @@ export default function Sidebar() {
       </div>
 
       {/* Nav items */}
-      <nav className="mt-4 flex flex-col gap-1" aria-label="주 메뉴" data-testid="sidebar-nav">
+      <nav className="mt-4 flex flex-col gap-1 flex-1" aria-label="주 메뉴" data-testid="sidebar-nav">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           const Icon = item.icon;
@@ -106,6 +108,18 @@ export default function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Logout button */}
+      <div className="pb-6">
+        <button
+          onClick={() => router.push("/login")}
+          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-secondary hover:bg-danger-light hover:text-danger transition-colors w-full"
+          data-testid="sidebar-logout"
+        >
+          <LogOut size={18} aria-hidden="true" />
+          로그아웃
+        </button>
+      </div>
     </aside>
   );
 }
