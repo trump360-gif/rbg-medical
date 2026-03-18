@@ -1,6 +1,238 @@
 import { Hospital, Patient } from './types'
 
 export const HOSPITALS: Hospital[] = [
+  // ===== 실제 병원 데이터 (PDF 문서 기반) =====
+  {
+    "id": "h-real-001",
+    "name": "서울아산병원",
+    "type": "tertiary",
+    "typeLabel": "상급종합병원",
+    "region": "서울",
+    "district": "송파구",
+    "address": "서울특별시 송파구 올림픽로43길 88",
+    "lat": 37.5268,
+    "lng": 127.1083,
+    "photos": [
+      { "url": "/images/hospitals/asan_exterior.webp", "label": "병원 외관" },
+      { "url": "/images/hospitals/asan_lobby.webp", "label": "로비" }
+    ],
+    "departments": [
+      {
+        "id": "h-real-001-cardio",
+        "code": "cardiology",
+        "name": "심장내과 (Cardiology)",
+        "doctors": [
+          {
+            "id": "d-asan-001",
+            "name": "Park Seung-Jung",
+            "departmentId": "h-real-001-cardio",
+            "specialties": ["관상동맥질환", "협심증", "심근경색", "관상동맥 스텐트 시술(PCI)", "심혈관 중재술"],
+            "education": ["서울대학교 의과대학 졸업", "서울아산병원 심장내과 전임의"],
+            "experience": ["서울아산병원 심장내과 교수", "대한심장학회 학술이사"],
+            "publications": 250,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }],
+            "foreignPatientExperience": "연간 외국인 환자 200명 이상 진료",
+            "awards": ["대한심장학회 우수연구상", "아시아 심혈관중재술 학회 공로상"]
+          },
+          {
+            "id": "d-asan-002",
+            "name": "Park Duk-Woo",
+            "departmentId": "h-real-001-cardio",
+            "specialties": ["심장판막질환", "구조적 심장질환 인터벤션"],
+            "education": ["연세대학교 의과대학 졸업", "서울아산병원 심장내과 펠로우"],
+            "experience": ["서울아산병원 심장내과 부교수"],
+            "publications": 180,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }],
+            "foreignPatientExperience": "구조적 심장질환 분야 국제 환자 다수 치료"
+          }
+        ]
+      },
+      {
+        "id": "h-real-001-neuro",
+        "code": "neurology",
+        "name": "신경과 (Neurology)",
+        "doctors": [
+          {
+            "id": "d-asan-003",
+            "name": "Koo Yong-Seo",
+            "departmentId": "h-real-001-neuro",
+            "specialties": ["뇌전증", "신경계 질환", "난치성 뇌전증 치료"],
+            "education": ["고려대학교 의과대학 졸업", "서울아산병원 신경과 전임의"],
+            "experience": ["서울아산병원 신경과 교수", "대한뇌전증학회 이사"],
+            "publications": 150,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }],
+            "foreignPatientExperience": "난치성 뇌전증 국제 환자 치료 경험 다수"
+          }
+        ]
+      },
+      {
+        "id": "h-real-001-breast",
+        "code": "breast_surgery",
+        "name": "유방외과 (Breast Surgery)",
+        "doctors": [
+          {
+            "id": "d-asan-004",
+            "name": "Kim Hee-Jung",
+            "departmentId": "h-real-001-breast",
+            "specialties": ["유방암", "유방암 보존수술", "유방재건 수술"],
+            "education": ["서울대학교 의과대학 졸업", "서울아산병원 외과 전임의"],
+            "experience": ["서울아산병원 유방외과 교수"],
+            "publications": 120,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }],
+            "foreignPatientExperience": "유방암 분야 해외 환자 수술 경험 풍부"
+          }
+        ]
+      },
+      {
+        "id": "h-real-001-ortho",
+        "code": "orthopedics",
+        "name": "정형외과 (Orthopedic Surgery)",
+        "doctors": [
+          {
+            "id": "d-asan-005",
+            "name": "Kim Sung-Soo",
+            "departmentId": "h-real-001-ortho",
+            "specialties": ["무릎 관절 질환", "인공관절 치환술", "스포츠 손상 수술"],
+            "education": ["연세대학교 의과대학 졸업", "서울아산병원 정형외과 전임의"],
+            "experience": ["서울아산병원 정형외과 교수", "대한정형외과학회 정회원"],
+            "publications": 100,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }, { "code": "ru", "label": "러시아어", "level": "interpreter" }],
+            "foreignPatientExperience": "CIS 국가 환자 정형외과 수술 다수 경험"
+          }
+        ]
+      }
+    ],
+    "languages": [
+      { "code": "en", "label": "영어", "level": "fluent" },
+      { "code": "ru", "label": "러시아어", "level": "interpreter" },
+      { "code": "ar", "label": "아랍어", "level": "interpreter" },
+      { "code": "zh", "label": "중국어", "level": "interpreter" }
+    ],
+    "isRegisteredForForeigner": true,
+    "isAcceptingReferral": true,
+    "whatsappNumber": "+82-2-3010-5001",
+    "email": "international@amc.seoul.kr",
+    "certifications": ["JCI 인증", "보건복지부 외국인환자 유치 의료기관"],
+    "description": "아시아 대표 대형 대학병원. 심장수술, 간이식, 암수술 분야 세계적 수준. 약 2,700병상 규모.",
+    "internationalPatientCount": 15000,
+    "foundedYear": 1989
+  },
+  {
+    "id": "h-real-002",
+    "name": "가톨릭관동대학교 국제성모병원",
+    "type": "general",
+    "typeLabel": "종합병원",
+    "region": "인천",
+    "district": "서구",
+    "address": "인천광역시 서구 건지로 56",
+    "lat": 37.5484,
+    "lng": 126.6770,
+    "photos": [
+      { "url": "/images/hospitals/stmary_exterior.webp", "label": "병원 외관" },
+      { "url": "/images/hospitals/stmary_intl.webp", "label": "국제진료센터" }
+    ],
+    "departments": [
+      {
+        "id": "h-real-002-spine",
+        "code": "spine_surgery",
+        "name": "척추외과 (Spine Surgery)",
+        "doctors": [
+          {
+            "id": "d-stmary-001",
+            "name": "Kim Jin-Soo",
+            "departmentId": "h-real-002-spine",
+            "specialties": ["척추질환", "척추 디스크 수술", "척추 고정술"],
+            "education": ["가톨릭대학교 의과대학 졸업"],
+            "experience": ["국제성모병원 척추외과 과장"],
+            "publications": 60,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }],
+            "foreignPatientExperience": "국제진료센터 통한 외국인 척추 수술 다수"
+          }
+        ]
+      },
+      {
+        "id": "h-real-002-ortho",
+        "code": "orthopedics",
+        "name": "정형외과 (Orthopedic Surgery)",
+        "doctors": [
+          {
+            "id": "d-stmary-002",
+            "name": "Lee Sang-Min",
+            "departmentId": "h-real-002-ortho",
+            "specialties": ["관절질환", "인공관절 치환술", "관절 내시경 수술"],
+            "education": ["가톨릭대학교 의과대학 졸업"],
+            "experience": ["국제성모병원 정형외과 교수"],
+            "publications": 45,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }]
+          }
+        ]
+      },
+      {
+        "id": "h-real-002-rehab",
+        "code": "rehabilitation",
+        "name": "재활의학과 (Rehabilitation Medicine)",
+        "doctors": [
+          {
+            "id": "d-stmary-003",
+            "name": "Park Ji-Hoon",
+            "departmentId": "h-real-002-rehab",
+            "specialties": ["재활치료", "수술 후 재활 프로그램"],
+            "education": ["가톨릭대학교 의과대학 졸업"],
+            "experience": ["국제성모병원 재활의학과 과장"],
+            "publications": 30,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }]
+          }
+        ]
+      },
+      {
+        "id": "h-real-002-im",
+        "code": "internal_medicine",
+        "name": "내과 (Internal Medicine)",
+        "doctors": [
+          {
+            "id": "d-stmary-004",
+            "name": "Choi Min-Seok",
+            "departmentId": "h-real-002-im",
+            "specialties": ["내과 질환", "만성질환 관리"],
+            "education": ["가톨릭대학교 의과대학 졸업"],
+            "experience": ["국제성모병원 내과 전문의"],
+            "publications": 35,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }]
+          }
+        ]
+      },
+      {
+        "id": "h-real-002-spine2",
+        "code": "spine_center",
+        "name": "척추센터 (Spine Center)",
+        "doctors": [
+          {
+            "id": "d-stmary-005",
+            "name": "Kang Hyun-Woo",
+            "departmentId": "h-real-002-spine2",
+            "specialties": ["척추질환", "최소침습 척추수술"],
+            "education": ["가톨릭대학교 의과대학 졸업", "미국 척추외과 연수"],
+            "experience": ["국제성모병원 척추센터장"],
+            "publications": 50,
+            "languages": [{ "code": "en", "label": "영어", "level": "fluent" }],
+            "foreignPatientExperience": "최소침습 척추수술 분야 해외 환자 다수 치료"
+          }
+        ]
+      }
+    ],
+    "languages": [
+      { "code": "en", "label": "영어", "level": "fluent" },
+      { "code": "ru", "label": "러시아어", "level": "interpreter" }
+    ],
+    "isRegisteredForForeigner": true,
+    "isAcceptingReferral": true,
+    "email": "intl@ish.ac.kr",
+    "certifications": ["보건복지부 외국인환자 유치 의료기관"],
+    "description": "인천 소재 종합병원. 국제진료센터 운영, 정형외과 및 척추센터 특화.",
+    "internationalPatientCount": 3000,
+    "foundedYear": 2014
+  },
+  // ===== 기존 생성 데이터 =====
   {
     "id": "h-001",
     "name": "강남세브란스병원",

@@ -191,11 +191,11 @@ export default function LoginPage() {
         >
           계정이 없으신가요?{" "}
           <a
-            href="mailto:contact@rbgmedical.com"
+            href="/signup"
             className="text-primary font-medium hover:underline"
-            data-testid="login-contact-link"
+            data-testid="login-signup-link"
           >
-            문의하기
+            회원가입
           </a>
         </p>
       </div>

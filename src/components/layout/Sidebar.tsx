@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Building2, Settings } from "lucide-react";
+import { LayoutDashboard, Users, Building2, Settings, User, Stethoscope, Briefcase } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { useUserStore } from "@/lib/userStore";
+import { MemberType } from "@/lib/types";
 
 interface NavItem {
   label: string;
@@ -18,8 +20,17 @@ const navItems: NavItem[] = [
   { label: "설정", href: "/settings", icon: Settings },
 ];
 
+const memberTypeConfig: Record<MemberType, { label: string; icon: React.ElementType; color: string; bgColor: string }> = {
+  patient: { label: "환자", icon: User, color: "text-blue-700", bgColor: "bg-blue-50 border-blue-200" },
+  doctor: { label: "의료인", icon: Stethoscope, color: "text-emerald-700", bgColor: "bg-emerald-50 border-emerald-200" },
+  agency: { label: "에이전시", icon: Briefcase, color: "text-violet-700", bgColor: "bg-violet-50 border-violet-200" },
+};
+
 export default function Sidebar() {
   const pathname = usePathname();
+  const { currentUser, switchUserType } = useUserStore();
+  const typeConfig = memberTypeConfig[currentUser.memberType];
+  const TypeIcon = typeConfig.icon;
 
   return (
     <aside
@@ -32,8 +43,42 @@ export default function Sidebar() {
         <span className="font-semibold text-text-primary text-sm">RBG Medical</span>
       </div>
 
+      {/* User type switcher */}
+      <div className="mt-5 mb-2">
+        <div className={cn("flex items-center gap-2 px-3 py-2 rounded-lg border", typeConfig.bgColor)}>
+          <TypeIcon size={16} className={typeConfig.color} />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-text-primary truncate">{currentUser.name}</p>
+            <p className={cn("text-[10px]", typeConfig.color)}>{typeConfig.label}</p>
+          </div>
+        </div>
+        <div className="flex gap-1 mt-2">
+          {(Object.keys(memberTypeConfig) as MemberType[]).map((type) => {
+            const config = memberTypeConfig[type];
+            const Icon = config.icon;
+            const isSelected = currentUser.memberType === type;
+            return (
+              <button
+                key={type}
+                onClick={() => switchUserType(type)}
+                className={cn(
+                  "flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-md text-[10px] transition-colors border",
+                  isSelected
+                    ? cn(config.bgColor, config.color, "font-medium")
+                    : "border-transparent text-text-muted hover:bg-bg-surface"
+                )}
+                title={`${config.label}로 전환`}
+              >
+                <Icon size={14} />
+                {config.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Nav items */}
-      <nav className="mt-8 flex flex-col gap-1" aria-label="주 메뉴" data-testid="sidebar-nav">
+      <nav className="mt-4 flex flex-col gap-1" aria-label="주 메뉴" data-testid="sidebar-nav">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           const Icon = item.icon;

@@ -3,9 +3,10 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Plus, Search, SlidersHorizontal } from 'lucide-react'
+import { Plus, Search, SlidersHorizontal, Briefcase } from 'lucide-react'
 import { PATIENTS } from '@/lib/mockData'
 import { STATUS_CONFIG, type CaseStatus } from '@/lib/types'
+import { useUserStore } from '@/lib/userStore'
 import { cn } from '@/lib/cn'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -66,6 +67,8 @@ function StatusBadges({ cases }: { cases: { status: CaseStatus }[] }) {
 export default function PatientsPage() {
   const router = useRouter()
   const [query, setQuery] = useState('')
+  const { isAgency } = useUserStore()
+  const agencyMode = isAgency()
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -92,11 +95,16 @@ export default function PatientsPage() {
 
         <Link
           href="/patients/new"
-          className="inline-flex items-center gap-2 bg-primary text-white rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-primary-dark transition-colors"
+          className={cn(
+            "inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors",
+            agencyMode
+              ? "bg-violet-600 text-white hover:bg-violet-700"
+              : "bg-primary text-white hover:bg-primary-dark"
+          )}
           data-testid="btn-register-patient"
         >
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          환자 등록
+          {agencyMode ? <Briefcase className="w-4 h-4" aria-hidden="true" /> : <Plus className="w-4 h-4" aria-hidden="true" />}
+          {agencyMode ? '환자 대리 등록' : '환자 등록'}
         </Link>
       </div>
 
