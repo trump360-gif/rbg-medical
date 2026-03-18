@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   User, Stethoscope, Briefcase, ArrowLeft, ArrowRight, Check,
-  Mail, MapPin
+  Mail, MapPin, Camera
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { MemberType } from "@/lib/types";
@@ -135,11 +135,25 @@ function Step2CommonInfo() {
             <FormField label="비밀번호" required>
               <input className={inputClassName} type="password" value={f.password} onChange={(e) => updateCommonFields({ password: e.target.value })} placeholder="8자 이상" />
             </FormField>
+            <FormSelect label="가입 채널" required value={f.signupChannel} onChange={(v) => updateCommonFields({ signupChannel: v })}
+              options={[{ value: "direct", label: "직접 가입 (Direct)" }, { value: "partner", label: "파트너 (Partner)" }, { value: "referral", label: "추천 (Referral)" }]} />
           </div>
         </FormSection>
 
         <FormSection title="개인 정보" icon={<User size={16} className="text-primary" />}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <FormField label="프로필 사진 (선택)">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-bg-surface border border-[#E8E8E8] flex items-center justify-center shrink-0">
+                    <Camera size={20} className="text-text-muted" />
+                  </div>
+                  <button type="button" className="px-4 py-2 rounded-lg border border-[#E8E8E8] text-sm text-text-secondary hover:bg-bg-surface transition-colors">
+                    사진 업로드
+                  </button>
+                </div>
+              </FormField>
+            </div>
             <FormField label="생년월일" required>
               <input className={inputClassName} type="date" value={f.dob} onChange={(e) => updateCommonFields({ dob: e.target.value })} />
             </FormField>
