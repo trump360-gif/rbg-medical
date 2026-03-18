@@ -17,7 +17,7 @@ interface TabItem {
 const tabItems: TabItem[] = [
   { label: "홈", href: "/dashboard", icon: LayoutDashboard, visibleFor: ["patient", "doctor", "agency"] },
   { label: "환자", href: "/patients", icon: Users, visibleFor: ["agency"] },
-  { label: "병원", href: "/hospitals", icon: Building2, visibleFor: ["patient", "doctor", "agency"] },
+  { label: "병원", href: "/hospitals", icon: Building2, visibleFor: ["patient", "agency"] },
   { label: "설정", href: "/settings", icon: Settings, visibleFor: ["patient", "doctor", "agency"] },
 ];
 

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus, FileText, CheckCircle, Clock, Briefcase, Stethoscope, User, Building2 } from 'lucide-react'
+import { Plus, FileText, CheckCircle, Clock, Briefcase, Stethoscope, User } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useUserStore } from '@/lib/userStore'
 import { MemberType } from '@/lib/types'
@@ -66,9 +66,9 @@ const dashboardConfig: Record<MemberType, {
     description: '연수 신청 현황과 협력 병원 정보를 확인합니다',
     accentColor: 'text-emerald-700',
     accentBg: 'bg-emerald-50 border-emerald-200',
-    ctaLabel: '병원 탐색',
-    ctaHref: '/hospitals',
-    ctaIcon: Building2,
+    ctaLabel: '프로필 관리',
+    ctaHref: '/settings',
+    ctaIcon: User,
     ctaBg: 'bg-emerald-600 hover:bg-emerald-700',
     stats: [
       { label: '연수 신청', value: 1, subtitle: '정형외과', valueColor: 'text-primary' },
