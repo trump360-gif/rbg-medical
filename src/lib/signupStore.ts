@@ -14,6 +14,7 @@ export interface SignupCommonFields {
   phone: string
   language: string
   signupChannel: string
+  signupChannelDetail?: string
   consents: UserConsents
 }
 

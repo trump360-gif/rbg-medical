@@ -13,6 +13,7 @@ import StepIndicator from "@/components/form/StepIndicator";
 import FormField, { inputClassName } from "@/components/form/FormField";
 import FormSection from "@/components/form/FormSection";
 import FormSelect from "@/components/form/FormSelect";
+import SearchableSelect from "@/components/form/SearchableSelect";
 import PhoneInput from "@/components/form/PhoneInput";
 import ConsentCheckboxes from "@/components/form/ConsentCheckboxes";
 import FileUploadZone from "@/components/form/FileUploadZone";
@@ -137,6 +138,13 @@ function Step2CommonInfo() {
             </FormField>
             <FormSelect label="가입 채널" required value={f.signupChannel} onChange={(v) => updateCommonFields({ signupChannel: v })}
               options={[{ value: "direct", label: "직접 가입 (Direct)" }, { value: "partner", label: "파트너 (Partner)" }, { value: "referral", label: "추천 (Referral)" }]} />
+            {(f.signupChannel === "partner" || f.signupChannel === "referral") && (
+              <FormField label={f.signupChannel === "partner" ? "파트너 업체명" : "추천인 / 추천 업체"} required>
+                <input className={inputClassName} value={f.signupChannelDetail || ""}
+                  onChange={(e) => updateCommonFields({ signupChannelDetail: e.target.value })}
+                  placeholder={f.signupChannel === "partner" ? "파트너 업체명을 입력하세요" : "추천인 또는 추천 업체명을 입력하세요"} />
+              </FormField>
+            )}
           </div>
         </FormSection>
 
@@ -159,14 +167,14 @@ function Step2CommonInfo() {
             </FormField>
             <FormSelect label="성별" required value={f.gender} onChange={(v) => updateCommonFields({ gender: v })}
               options={[{ value: "male", label: "남성" }, { value: "female", label: "여성" }, { value: "other", label: "기타" }]} />
-            <FormSelect label="국적" required value={f.nationality} onChange={(v) => updateCommonFields({ nationality: v })} options={nationalityOptions} />
+            <SearchableSelect label="국적" required value={f.nationality} onChange={(v) => updateCommonFields({ nationality: v })} options={nationalityOptions} searchPlaceholder="국가명 검색..." />
             <FormSelect label="사용 언어" required value={f.language} onChange={(v) => updateCommonFields({ language: v })} options={languageOptions} />
           </div>
         </FormSection>
 
         <FormSection title="연락처" icon={<MapPin size={16} className="text-primary" />}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormSelect label="거주 국가" required value={f.country} onChange={(v) => updateCommonFields({ country: v })} options={nationalityOptions} />
+            <SearchableSelect label="거주 국가" required value={f.country} onChange={(v) => updateCommonFields({ country: v })} options={nationalityOptions} searchPlaceholder="국가명 검색..." />
             <FormField label="거주 도시">
               <input className={inputClassName} value={f.city} onChange={(e) => updateCommonFields({ city: e.target.value })} placeholder="도시명" />
             </FormField>
